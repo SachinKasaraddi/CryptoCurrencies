@@ -15,7 +15,9 @@ class AuthenticationBloc
   @override
   Stream<AuthenticationState> mapEventToState(
       AuthenticationEvent event) async* {
-    if (event is AuthenticationLoggedIn) {
+    if (event is AuthenticationStarted) {
+      yield* _mapAuthenticationStartedToState();
+    } else if (event is AuthenticationLoggedIn) {
       yield* _mapAuthenticationLoggedInToState();
     } else if (event is AuthenticationLoggedOut) {
       yield* _mapAuthenticationLoggedOutInToState();
@@ -24,15 +26,26 @@ class AuthenticationBloc
 
   //AuthenticationLoggedOut
   Stream<AuthenticationState> _mapAuthenticationLoggedOutInToState() async* {
-    yield AuthenticationFailure();
     _userRepository.signOut();
+    yield AuthenticationFailure();
   }
 
   //AuthenticationLoggedIn
   Stream<AuthenticationState> _mapAuthenticationLoggedInToState() async* {
     // ignore: unnecessary_null_comparison
     if (_userRepository.getUser() != null) {
-      yield AuthenticationSuccess((await _userRepository.getUser())!);
+      yield AuthenticationSuccess((await _userRepository.getUser()));
+    } else {
+      yield AuthenticationFailure();
+    }
+  }
+
+  // AuthenticationStarted
+  Stream<AuthenticationState> _mapAuthenticationStartedToState() async* {
+    final isSignedIn = await _userRepository.isSignedIn();
+    if (isSignedIn) {
+      final firebaseUser = await _userRepository.getUser();
+      yield AuthenticationSuccess(firebaseUser);
     } else {
       yield AuthenticationFailure();
     }

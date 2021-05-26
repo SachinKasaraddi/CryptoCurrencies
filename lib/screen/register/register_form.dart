@@ -37,7 +37,7 @@ class _LoginFormState extends State<RegisterForm> {
     return BlocListener<RegisterBloc, RegisterState>(
       listener: (context, state) {
         if (state.isFailure) {
-          Scaffold.of(context)
+          ScaffoldMessenger.of(context)
             ..removeCurrentSnackBar()
             ..showSnackBar(
               SnackBar(
@@ -54,7 +54,7 @@ class _LoginFormState extends State<RegisterForm> {
         }
 
         if (state.isSubmitting) {
-          Scaffold.of(context)
+          ScaffoldMessenger.of(context)
             ..removeCurrentSnackBar()
             ..showSnackBar(
               SnackBar(
@@ -73,6 +73,7 @@ class _LoginFormState extends State<RegisterForm> {
         }
 
         if (state.isSuccess) {
+          ScaffoldMessenger.of(context)..removeCurrentSnackBar();
           BlocProvider.of<AuthenticationBloc>(context).add(
             AuthenticationLoggedIn(),
           );
@@ -89,58 +90,60 @@ class _LoginFormState extends State<RegisterForm> {
                   TextFormField(
                     controller: _emailController,
                     decoration: InputDecoration(
-                      icon: Icon(Icons.email),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      ),
                       labelText: "Email",
                     ),
                     keyboardType: TextInputType.emailAddress,
-                    autovalidate: true,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     autocorrect: false,
                     validator: (_) {
                       return !state.isEmailValid ? 'Invalid Email' : null;
                     },
                   ),
+                  SizedBox(height: 20),
                   TextFormField(
                     controller: _passwordController,
                     decoration: InputDecoration(
-                      icon: Icon(Icons.lock),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      ),
                       labelText: "Password",
                     ),
                     obscureText: true,
-                    autovalidate: true,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     autocorrect: false,
                     validator: (_) {
                       return !state.isPasswordValid ? 'Invalid Password' : null;
                     },
                   ),
                   SizedBox(
-                    height: 30,
+                    height: 20,
                   ),
-                  MaterialButton(
-                      height: 45,
-                      onPressed: () {
-                        if (isButtonEnabled(state)) {
-                          _onFormSubmitted();
-                        }
-                      },
-                      color: Colors.blueAccent,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              'Register',
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
-                            ),
-                            Icon(
-                              Icons.check,
-                              color: Colors.white,
-                            ),
-                          ],
+                  ElevatedButton(
+                    onPressed: () {
+                      if (isButtonEnabled(state)) {
+                        _onFormSubmitted();
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 20.0, vertical: 8.0),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0)),
+                        primary: Colors.blue),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Register',
+                          style: TextStyle(color: Colors.white, fontSize: 18),
                         ),
-                      )),
+                      ),
+                    ),
+                  ),
                   SizedBox(
                     height: 10,
                   ),

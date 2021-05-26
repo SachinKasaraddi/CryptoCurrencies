@@ -31,19 +31,21 @@ class RegisterScreen extends StatelessWidget {
             child: Stack(
               children: <Widget>[
                 Container(
-                  padding: const EdgeInsets.only(top: 100, left: 50),
                   width: double.infinity,
-                  height: 300,
-                  child: Text(
-                    'Register',
-                    style: TextStyle(
-                      fontSize: 40,
-                      color: Colors.black,
+                  height: 500,
+                  child: Center(
+                    child: Text(
+                      'CryptoApp',
+                      style: TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                 ),
                 Container(
-                  margin: const EdgeInsets.only(top: 230),
+                  margin: const EdgeInsets.only(top: 300),
                   child: RegisterForm(),
                 )
               ],

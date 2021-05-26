@@ -1,7 +1,12 @@
+import 'package:cryptoapp/bloc/authentication_bloc/authentication_bloc.dart';
+import 'package:cryptoapp/bloc/authentication_bloc/authentication_event.dart';
 import 'package:cryptoapp/bloc/crypto_bloc.dart';
 import 'package:cryptoapp/models/crypto_base_response.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
+
+import '../../main.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -36,6 +41,19 @@ class _DashboardState extends State<Dashboard> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Crypto"),
+        actions: <Widget>[
+          Padding(
+              padding: EdgeInsets.only(right: 20.0),
+              child: GestureDetector(
+                onTap: () {
+                  _logOutUser();
+                },
+                child: Icon(
+                  Icons.logout,
+                  size: 26.0,
+                ),
+              )),
+        ],
       ),
       body: RefreshIndicator(
         onRefresh: () async {
@@ -190,5 +208,18 @@ class _DashboardState extends State<Dashboard> {
     return new RichText(
         text: new TextSpan(
             children: [priceTextWidget, percentageChangeTextWidgte]));
+  }
+
+  void _logOutUser() {
+    BlocProvider.of<AuthenticationBloc>(context).add(
+      AuthenticationLoggedOut(),
+    );
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => new App(),
+      ),
+      (route) => false,
+    );
   }
 }
